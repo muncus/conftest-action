@@ -1,0 +1,28 @@
+name: "Conftest"
+description: "Run conftest (conftest.dev) to enforce OPA policies"
+author: "Marc Dougherty"
+
+inputs:
+  output:
+    description: "output format"
+    default: "github"
+  files:
+    description: "files/directories to check against policies"
+    required: true
+  policy:
+    description: "location of Rego policies to be loaded"
+    default:  "policy"
+  namespace:
+    description: "rego namespace to evaluate input against"
+    default: "main"
+  extra_args:
+    description: "extra arguments to pass to conftest."
+    default: ""
+
+runs:
+  using: 'docker'
+  image: 'docker://openpolicyagent/conftest:latest'
+  entrypoint: 'sh'
+  args:
+    - "-c"
+    - "conftest test --output ${{ inputs.output }} --policy ${{ inputs.policy }} -n ${{ inputs.namespace }} ${{ inputs.extra_args }} -- ${{ inputs.files }}"
